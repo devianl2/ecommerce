@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Repositories\ProductRepository;
 use App\Models\ProductImage;
+use App\Rules\CustomFileLimit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -74,14 +75,14 @@ class ProductController extends Controller
             'description' => 'nullable', // Optional for user
             'quantity' => 'required|integer|min:0',// Integer, no decimal
             'price' => 'required|numeric|min:0', // numeric, w/o decimal
-            'images'    =>  'required',
+            'images'    =>  ['required', new CustomFileLimit()],
             'images.*'    =>    'image|mimes:jpg,jpeg,png,gif'
         ];
 
         // If this is edit
         if ($id)
         {
-            $validation['images']   =   'nullable';
+            $validation['images']   =   ['nullable', new CustomFileLimit()];
             $message    =   'Product is updated successfully';
         }
 
